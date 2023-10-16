@@ -1,0 +1,122 @@
+-- List of allowed usernames
+local allowedUsernames = {
+    "omarriello",
+    "javieeer_05",
+    -- Add more usernames here
+}
+
+-- Function to check if a username is allowed
+local function isUsernameAllowed(username)
+    for _, allowedUsername in ipairs(allowedUsernames) do
+        if username == allowedUsername then
+            return true
+        end
+    end
+    return false
+end
+
+-- Get the player and their username
+local player = game.Players.LocalPlayer
+local username = player.Name
+
+-- Check if the player's username is allowed
+if isUsernameAllowed(username) then
+    -- The player's username is allowed to use the script
+    print("Welcome, " .. username .. "! You are allowed to use the script.")
+    
+    -- Load the UI library
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+-- Variables to track whether Auto Ez and Teleportation are enabled
+local isAutoEzEnabled = false
+local isTeleportEnabled = false
+
+-- Create a window in the library
+local PhantomForcesWindow = Library:NewWindow("Bubble Gum Mayhem")
+
+-- Create a section within the window
+local KillingCheats = PhantomForcesWindow:NewSection("Main")
+
+-- Create a toggle for Auto Ez
+KillingCheats:CreateToggle("Auto Eggs (Fast)", function(value)
+    isAutoEzEnabled = value
+    if isAutoEzEnabled then
+        print("Auto Ez is enabled. Your script will run automatically.")
+    else
+        print("Auto Ez is disabled. Your script won't run automatically.")
+    end
+end)
+
+-- Create a toggle for Teleportation
+local TeleportToggle = KillingCheats:CreateToggle("Auto Trick or Treat", function(value)
+    isTeleportEnabled = value
+    if isTeleportEnabled then
+        TeleportToggle:SetLabelText("Teleport (On)")
+    else
+        TeleportToggle:SetLabelText("Teleport (Off)")
+    end
+end)
+
+-- Define the destination CFrame positions and rotations
+local destinations = {
+   CFrame.new(-8656.31934, 47.9047852, 30.2960815, -0.758202314, 0, -0.652019262, 0, 1, 0, 0.652019262, 0, -0.758202314),
+    CFrame.new(-8917.94629, 62.5141335, -6.97766113, 0.715594649, 0, -0.698515773, 0, 1, 0, 0.698515773, 0, 0.715594649),
+    CFrame.new(-8833.63477, 44.2427864, -145.787048, 0.433579028, 0, -0.901115537, 0, 1, 0, 0.901115537, 0, 0.433579028),
+    CFrame.new(-8710.92969, 47.9047852, 115.436462, 0.563576221, 0, 0.82606405, 0, 1, 0, -0.82606405, 0, 0.563576221),
+    CFrame.new(-8917.71289, 62.5141182, 34.506134, 0.901107192, 0, 0.433596432, 0, 1, 0, -0.433596432, 0, 0.901107192),
+    CFrame.new(-8871.2002, 44.2427826, -80.0088501, 0.997179985, 0, -0.0750471875, 0, 1, 0, 0.0750471875, 0, 0.997179985),
+    CFrame.new(-8637.32715, 47.9047775, 71.7932434, -0.995064259, 0, -0.09923397, 0, 1, 0, 0.09923397, 0, -0.995064259),
+    CFrame.new(-8843.89258, 51.3741302, 3.70706177, 0.0750780702, 0, 0.997177601, 0, 1, 0, -0.997177601, 0, 0.0750780702),
+    CFrame.new(-8774.20508, 48.7741241, -199.469177, -0.563576221, 0, -0.82606405, 0, 1, 0, 0.82606405, 0, -0.563576221),
+    CFrame.new(-8659.2002, 47.9047775, 111.083862, -0.51043582, 0, 0.859915853, 0, 1, 0, -0.859915853, 0, -0.51043582),
+    CFrame.new(-8741.64355, 47.9047775, 75.1617737, 0.96272552, 0, 0.270480245, 0, 1, 0, -0.270480245, 0, 0.96272552)
+}
+
+-- Time interval (in seconds) to switch destinations
+local switchInterval = 1  -- Change this value to set the interval
+
+-- Counter to track the current destination
+local currentDestination = 1
+
+-- Function to switch to the next destination
+local function switchToNextDestination()
+    if isTeleportEnabled then
+        currentDestination = currentDestination % #destinations + 1
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        if character then
+            character:SetPrimaryPartCFrame(destinations[currentDestination])
+        end
+    end
+end
+
+-- Function to handle Auto Ez
+local function autoEzThread()
+    while true do
+        if isAutoEzEnabled then
+            local vim = game:service'VirtualInputManager'
+            vim:SendKeyEvent(true, Enum.KeyCode.R, false, game)
+            wait(0.1)
+        else
+            wait(0.1)
+        end
+    end
+end
+
+-- Start the Auto Ez coroutine
+coroutine.wrap(autoEzThread)()
+
+
+-- Set up a timer to periodically switch destinations
+while true do
+    wait(switchInterval)
+    switchToNextDestination()
+end
+
+else
+    -- The player's username is not allowed to use the script
+    print("Sorry, " .. username .. "! You are not allowed to use the script.")
+    
+    -- Kick the player from the game
+    player:Kick("You are not allowed to use this script.")
+end
